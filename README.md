@@ -51,3 +51,57 @@ Aplikacja NodeGoat jest aplikacją webową, opartą o architekturę klient-serwe
 
 
 # 5. Szczegóły
+## A01:2021 Broken Access Control
+Kategoria podatności opisująca błędy dostępu. Kontrola dostępu egzekwuje politykę w taki sposób, aby użytkownicy nie mogli działać poza swoimi zamierzonymi uprawnieniami. Nieprawidłowości prowadzą zazwyczaj do nieuprawnionego ujawnienia informacji, modyfikacji lub zniszczenia wszystkich danych.
+|||
+|:------: | ----------- |
+| Opis podatności | ***Insecure Direct Object References*** <br/> Aplikacja NodeGoat używa `userid` jako części adresu `URL`, oraz nie sprawdza czy użytkownik jest uprawniony do przeglądania strony docelowej. Widoczne jest to w module Allocations. Napastnik jest w stanie zmodyfikować adres `URL` i uzyskać informacje o alokacjach innych użytkowników. |
+| Zrzuty ekranowe |W `routes/allocations.js`, NodeGoat pobiera `id` użytkownika z adresu url, aby pobrać alokacje. <img src='images/A1_3.png'/> <br/> W pasku przeglądarki widnieje następujący adres `URL`: `http://127.0.0.1:4000/allocations/2` <br /><br/> <img src='images/A1_1.png'/> <br/> Wytarczy zmienić adres na przykładowo: `http://127.0.0.1:4000/allocations/3` aby uzyskać nieautoryzowany dostęp do danych innego użytkownika <br/><img src='images/A1_2.png'/> <br/>  |
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje	 | <ul><li>Bezpieczniej jest zawsze pobierać alokacje dla zalogowanego użytkownika (używając `req.session.userId`) zamiast pobierać je z adresu url.</li><li>Każde użycie bezpośredniego odwołania do obiektu z niezaufanego źródła musi zawierać sprawdzenie kontroli dostępu, aby zapewnić, że użytkownik jest upoważniony do żądanego obiektu.</li> <li>Nie eksponować kluczy bazy danych, jako części linku</li></ul> |
+|||
+
+|||
+|:------: | ----------- |
+| Opis podatności | ***Missing Function Level Access Control*** <br/> W aplikacji NodeGoat w module `Benefits`, zwykły użytkownik może uzyskać dostęp do zasobów przeznaczonych tylko dla Administratora. Dzięki temu może on je zmienić bez posiadania odpiwiednich uprawnień|
+| Zrzuty ekranowe |  W aplikacji NodeGoat, luka ta występuje w module `Benefits`, który umożliwia zmianę daty rozpoczęcia wypłaty świadczeń dla pracowników. Link do modułu świadczeń jest widoczny tylko dla Administratora <br/> <img src='images/A1_4.png'> <br/> W Aplikacji NodeGoat nie ma sprawdzania autoryzacji dla tras związanych z benefits w `routes/index.js` <br/> <img src='images/A1_6.png'/> <br/> Standardowy użytkownik domyślnie nie posiada dostępu do tego modułu: <br/> <img src='images/A1_5.png'/> <br/> Natomiast wystarczy wprowadzić w pasku `URL` adres: `http://127.0.0.1:4000/benefits` co spowoduje bezpośrednie dostanie się do strony Administratora. <br/> <img src='images/A1_4.png'/>|
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje	 | <ul><li>Można to naprawić, dodając middleware do weryfikacji roli użytkownika – sprawdzenia czy użytkownik jest zalogowany jako admin</li></ul> |
+|||
+
+## A02:2021 Cryptographic Failures
+Podatność ta umożliwia napastnikowi dostęp do wrażliwych danych. Utrata takich danych może spowodować poważne skutki biznesowe i utratę reputacji. Wrażliwe dane zasługują na dodatkową ochronę, taką jak szyfrowanie, a także specjalne środki ostrożności podczas wymiany z przeglądarką. Jeśli napastnik uzyska dostęp do bazy danych aplikacji, może wykraść wrażliwe informacje niezaszyfrowane lub zaszyfrowane słabym algorytmem szyfrowania.
+|||
+|:------: | ----------- |
+| Opis podatności |Aplikacja NodeGoat wykorzystuje protokół HTTP do komunikacji z serwerem. Jest to protokół nieszyfrowany, może on być podatny na przechwycenie danych |
+| Zrzuty ekranowe |  W aplikacji NodeGoat wykorzystuje się niezabezpieczone połączenie HTTP <br/> <img src='images/1.png'/> <br/>|
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje	 | <ul><li>Należy wykorzystać bezpieczniejszy, zaszyfrowany protokół HTTPS</li></ul> |
+|||
+
+|||
+|:------: | ----------- |
+| Opis podatności |Aplikacja NodeGoat w żaden sposób nie szyfruje danych przechowywanych w bazie danych. Wszystkie hasła przechowywane są w postacii zwykłego tekstu. W przypadku przechwycenia ich przez napastnika, nie miałby on żadnego probllemu z ich wykorzystaniem, ponieważ nie są one w żaden sposób zazyfrowane. |
+| Zrzuty ekranowe |  Niezabezpieczone dane użytkownika trzymane są w bazie danych w postaci zwykłego tekstu <br/><img src='images/2.png'/>|
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje	 | <ul><li>Szyfrować wszystkie dane wrażliwe</li> <li>Do szyfrowania haseł wykorzystać naprzykład protokół Argon2</li></ul> |
+|||
+
+## A03:2021 Injection
+Kategoria podatności, dzięki którym użytkownicy wstrzykują różnego typu polecenia, co powoduje wykonanie ich po stronie serwera.
+|||
+|:------: | ----------- |
+| Opis podatności | W aplikacji NodeGoat wykorzystywana jest funkcja `eval()` w celu przetwarzania danych wejściowych. Nie występuje jakakolwiek walidacja. Może to zostać wykorzystane przez atakującego do wstrzyknięcia i wykonania złośliwego kodu JavaScript na serwerze. Innym potencjalnym celem atakującego może być odczytanie zawartości plików z serwera. |
+| Zrzuty ekranowe |  W `routes/contributions.js`, funkcja `handleContributionsUpdate()` w sposób niezabezpieczony używa `eval()` do konwersji kwot składek podanych przez użytkownika na liczby całkowite. <br/> <img src='images/7.png'/> <br/> Atakujący może wyłączyć serwer poprzez wykonanie polecenia: `process.exit()` <img src='images/3.png'/> <br/> Po kliknięciu przycisku `SUBMIT` nastąpiło zabicie procesu, serwer przestał działać <br/><img src='images/4.png'/> <br/> Wpisanie w okienko `while(true)` spowodowałoby całkowite wykorzystanie procesora, serwer nie będzie w stanie przetworzyć żadnych innych przychodzących żądań do czasu zrestartowania serwera <br/>Atakujący może także odczytać zawartość katalogu znajdującego się na serwerze poprzez zastosowanie polecenia: `res.end(require('fs').readdirSync('.').toString())` <br/> <img src='images/5.png'/> <br/> <img src='images/6.png'/> <br/> |
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje	 | <ul><li>Walidować dane wejściowe po stronie serwera przed przetworzeniem ich</li> <li>Nie używać funkcji `eval()` do przetwarzania danych wejściowych użytkownika. Unikać używania innych poleceń o podobnym działaniu, takich jak `setTimeOut(), setInterval() i Function()`</li> <li>Do parsowania danych wejściowych JSON, zamiast używać `eval()`, użyć bezpieczniejszej alternatywy takiej jak `JSON.parse()`. Do konwersji typów użyć metod parseXXX() związanych z typami.</li></ul> |
+|||
+
+|||
+|:------: | ----------- |
+| Opis podatności | Błędy XSS pojawiają się, gdy aplikacja pobiera niezaufane dane i wysyła je do przeglądarki internetowej bez odpowiedniej walidacji. XSS pozwala atakującym na wykonanie skryptów w przeglądarce ofiary, które mogą uzyskać dostęp do wszelkich ciasteczek, tokenów sesji lub innych wrażliwych informacji przechowywanych przez przeglądarkę, lub przekierować użytkownika na złośliwe strony. |
+| Zrzuty ekranowe |  W `routes/contributions.js`, funkcja `handleContributionsUpdate()` w sposób niezabezpieczony używa `eval()` do konwersji kwot składek podanych przez użytkownika na liczby całkowite. <br/> <img src='images/7.png'/> <br/> Atakujący może wyłączyć serwer poprzez wykonanie polecenia: `process.exit()` <img src='images/3.png'/> <br/> Po kliknięciu przycisku `SUBMIT` nastąpiło zabicie procesu, serwer przestał działać <br/><img src='images/4.png'/> <br/> Wpisanie w okienko `while(true)` spowodowałoby całkowite wykorzystanie procesora, serwer nie będzie w stanie przetworzyć żadnych innych przychodzących żądań do czasu zrestartowania serwera <br/>Atakujący może także odczytać zawartość katalogu znajdującego się na serwerze poprzez zastosowanie polecenia: `res.end(require('fs').readdirSync('.').toString())` <br/> <img src='images/5.png'/> <br/> <img src='images/6.png'/> <br/> |
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje	 | <ul><li>Walidować dane wejściowe po stronie serwera przed przetworzeniem ich</li> <li>Nie używać funkcji `eval()` do przetwarzania danych wejściowych użytkownika. Unikać używania innych poleceń o podobnym działaniu, takich jak `setTimeOut(), setInterval() i Function()`</li> <li>Do parsowania danych wejściowych JSON, zamiast używać `eval()`, użyć bezpieczniejszej alternatywy takiej jak `JSON.parse()`. Do konwersji typów użyć metod parseXXX() związanych z typami.</li></ul> |
+|||
+
