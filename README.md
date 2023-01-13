@@ -37,11 +37,11 @@ Aplikacja NodeGoat jest aplikacją webową, opartą o architekturę klient-serwe
 
 | Numer | Opis |
 | :------: | ----------- |
-| A01:2021 Broken Access Control| <ul><li>$\color{red}{\textrm{Aplikacja wykorzystuje userid jako część adresu URL}}$</li><li>$\color{red}{\textrm{Możliwość dostępu do zasobów bez posiadania odpowiednich uprawnień}}$</li><li>$\color{yellow}{\textrm{	Istnieje możliwość podmiany linku na taki, który prowadzi w inne miejsce}}$</li></ul> |
+| A01:2021 Broken Access Control| <ul><li>$\color{red}{\textrm{Aplikacja wykorzystuje userid jako część adresu URL}}$</li><li>$\color{red}{\textrm{Możliwość dostępu do zasobów bez posiadania odpowiednich uprawnień}}$</li></ul> |
 | A02:2021 Cryptographic Failures| <ul><li>$\color{red}{\textrm{Aplikacja wykorzystuje protokół HTTP do komunikacji z serwerem.}}$</li><li>$\color{red}{\textrm{Aplikacja przechowuje wrażliwe dane osobiste użytkownika jako zwykły tekst, bez używania jakiegokolwiek szyfrowania.}}$</li>
 | A03:2021 Injection| <ul><li>$\color{red}{\textrm{Możliwość wstrzyknięcia kodu JS}}$</li><li>$\color{red}{\textrm{Podatności XSS}}$</li>
 | A04:2021 Insecure Design| <ul> <li>$\color{grey}{\textrm{Na razie nie stwierdzono}}$</li>
-| A05:2021 Security Misconfiguration| <ul> <li>$\color{red}{\textrm{Domyślny nagłówek HTTP x-powered-by może ujawnić szczegóły implementacji atakującemu}}$</li> <li>$\color{green}{\textrm{Nie jest ustawiona domyślna nazwa sesji cookie}}$</li>
+| A05:2021 Security Misconfiguration| <ul> <li>$\color{yellow}{\textrm{Domyślny nagłówek HTTP x-powered-by może ujawnić szczegóły implementacji atakującemu}}$</li>|
 | A06:2021 Vulnerable and Outdated Components| <ul> <li>$\color{yellow}{\textrm{Wykorzystywane są przestarzałe wersje bibliotek, oraz instalowane takie, które nie są używane}}$</li> 
 | A07:2021 Identification and Authentication Failures| <ul> <li>$\color{red}{\textrm{Hasło zapisane w bazie danych w postaci zwykłego tekstu}}$</li><li>$\color{yellow}{\textrm{Sesja pozostaje aktywna do momentu, gdy użytkownik jawnie się wyloguje}}$</li><li>$\color{yellow}{\textrm{Aplikacja nie wymusza silnego hasła}}$</li><li>$\color{green}{\textrm{Aplikacja precyzuje czy błędne jest hasło czy login}}$</li>
 | A08:2021 Software and Data Integrity Failures| <ul> <li>$\color{grey}{\textrm{ Na razie nie stwierdzono }}$</li>
@@ -100,8 +100,29 @@ Kategoria podatności, dzięki którym użytkownicy wstrzykują różnego typu p
 |||
 |:------: | ----------- |
 | Opis podatności | Błędy XSS pojawiają się, gdy aplikacja pobiera niezaufane dane i wysyła je do przeglądarki internetowej bez odpowiedniej walidacji. XSS pozwala atakującym na wykonanie skryptów w przeglądarce ofiary, które mogą uzyskać dostęp do wszelkich ciasteczek, tokenów sesji lub innych wrażliwych informacji przechowywanych przez przeglądarkę, lub przekierować użytkownika na złośliwe strony. |
-| Zrzuty ekranowe |  W `routes/contributions.js`, funkcja `handleContributionsUpdate()` w sposób niezabezpieczony używa `eval()` do konwersji kwot składek podanych przez użytkownika na liczby całkowite. <br/> <img src='images/7.png'/> <br/> Atakujący może wyłączyć serwer poprzez wykonanie polecenia: `process.exit()` <img src='images/3.png'/> <br/> Po kliknięciu przycisku `SUBMIT` nastąpiło zabicie procesu, serwer przestał działać <br/><img src='images/4.png'/> <br/> Wpisanie w okienko `while(true)` spowodowałoby całkowite wykorzystanie procesora, serwer nie będzie w stanie przetworzyć żadnych innych przychodzących żądań do czasu zrestartowania serwera <br/>Atakujący może także odczytać zawartość katalogu znajdującego się na serwerze poprzez zastosowanie polecenia: `res.end(require('fs').readdirSync('.').toString())` <br/> <img src='images/5.png'/> <br/> <img src='images/6.png'/> <br/> |
+| Zrzuty ekranowe | W aplikacji NodeGoat nie jest ustawiona flaga HTTPonly dla cookie <br/> <img src='images/XSSc.png'/> <br/> NodeGoat jest podatna na Stored XSS w formularzu profili. Podczas wysyłania formularza, wartości pól imię i nazwisko są przesyłane do serwera i bez żadnej walidacji są zapisywane w bazie danych. Wartości te są następnie wysyłane z powrotem do przeglądarki bez żadnej walidacji i wyświetlane w prawym górnym rogu. <br/> <img src='images/XSS1.png'/> <br/> Użytkownik może zmienić imię lub nazwisko na `<script>alert(document.cookie)</script>` <br/> <img src='images/XSS2.png'/> <br/> Dzięki czemu może uzyskać informacje <br/> <img src='images/XSS3.png'/>  |
 | Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
-| Rekomendacje	 | <ul><li>Walidować dane wejściowe po stronie serwera przed przetworzeniem ich</li> <li>Nie używać funkcji `eval()` do przetwarzania danych wejściowych użytkownika. Unikać używania innych poleceń o podobnym działaniu, takich jak `setTimeOut(), setInterval() i Function()`</li> <li>Do parsowania danych wejściowych JSON, zamiast używać `eval()`, użyć bezpieczniejszej alternatywy takiej jak `JSON.parse()`. Do konwersji typów użyć metod parseXXX() związanych z typami.</li></ul> |
+| Rekomendacje	 | <ul><li> Ustawić flagę HTTPOnly dla cookie sesji podczas konfiguracji sesji express</li> <li>W aplikacji NodeGoat nie było dodatkowych kontekstów, które wymagałyby kodowania, w przeciwnym razie konieczne jest kodowanie dla właściwego kontekstu w zależności od tego, gdzie dane są umieszczane. </li> </ul> |
 |||
 
+## A04:2021 Insecure Design
+
+## A05:2021 Security Misconfiguration
+Ta luka pozwala atakującemu na dostęp do domyślnych kont, nieużywanych stron, niezałatanych dziur, niezabezpieczonych plików i katalogów, itp. w celu uzyskania nieautoryzowanego dostępu lub wiedzy o systemie. <br/> Nieprawidłowa konfiguracja bezpieczeństwa może zdarzyć się na każdym poziomie stosu aplikacji, w tym platformy, serwera WWW, serwera aplikacji, bazy danych, frameworka i kodu własnego.
+|||
+|:------: | ----------- |
+| Opis podatności | Dzięki narzędziom dewelopera, każdy użytkownik można zauważyć nagłówek `X-powered-by`. Nagłówek ten może ujawnić szczegóły implementacji atakującemu. Backend jest wspierany przez Express.|
+| Zrzuty ekranowe | Domyślny nagłówek HTTP x-powered-by może ujawnić szczegóły implementacji atakującemu. <br/> <img src='images/8.png'/> <br/> |
+| Poziom niebezpieczeństwa	 | $\color{yellow}{\textrm{ŚREDNI}}$  |
+| Rekomendacje	 | <ul><li>Używać najnowszych stabilnych wersji node.js i express</li> <li>Wywołać metodę `app.disable('x-powered-by')` w celu nie wyświetlania podanej informacji </li> </ul> |
+|||
+
+## A06:2021 Vulnerable and Outdated Components
+Komponenty, takie jak biblioteki, frameworki i inne moduły oprogramowania, prawie zawsze działają z pełnymi uprawnieniami. Jeżeli podatny komponent zostanie wykorzystany, taki atak może ułatwić poważną utratę danych lub przejęcie serwera. Aplikacje wykorzystujące komponenty o znanych lukach mogą osłabić mechanizmy obronne aplikacji i umożliwić szereg możliwych ataków i skutków.
+|||
+|:------: | ----------- |
+| Opis podatności | W aplikacji NodeGoat występują liczne przestarzałe i podatne komponenty. Instaluje ona również pakiety z których w rzeczywistości nie korzysta |
+| Zrzuty ekranowe | Wykonano polecenie npm audit i stwierdzono wiele podatności. Polecenie audit przesyła opis zależności skonfigurowanych w projekcie do domyślnego rejestru i prosi o raport znanych podatności. Jeśli jakieś podatności zostaną znalezione, wtedy zostanie obliczony wpływ i odpowiednie środki zaradcze. <br/> <img src='images/A6_1.png'/> <br /> Przykładowe znalezione podatności <img src='images/A6_2.png'/> <br/> <img src='images/A6_3.png'/> |
+| Poziom niebezpieczeństwa	 | $\color{yellow}{\textrm{ŚREDNI}}$  |
+| Rekomendacje	 | <ul><li>Usunąć nieużywane zależności, niepotrzebne funkcje, komponenty, pliki i dokumentację.</li> <li>Należy pozyskiwać komponenty tylko z oficjalnych źródeł poprzez bezpieczne odnośniki</li> <li>Monitorować biblioteki i komponenty, które nie są utrzymywane lub nie są tworzone łaty bezpieczeństwa dla starszych wersji.</li></ul> |
+|||
