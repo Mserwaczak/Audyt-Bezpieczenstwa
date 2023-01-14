@@ -41,9 +41,9 @@ Aplikacja NodeGoat jest aplikacją webową, opartą o architekturę klient-serwe
 | A02:2021 Cryptographic Failures| <ul><li>$\color{red}{\textrm{Aplikacja wykorzystuje protokół HTTP do komunikacji z serwerem.}}$</li><li>$\color{red}{\textrm{Aplikacja przechowuje wrażliwe dane osobiste użytkownika jako zwykły tekst, bez używania jakiegokolwiek szyfrowania.}}$</li>
 | A03:2021 Injection| <ul><li>$\color{red}{\textrm{Możliwość wstrzyknięcia kodu JS}}$</li><li>$\color{red}{\textrm{Podatności XSS}}$</li>
 | A04:2021 Insecure Design| <ul> <li>$\color{grey}{\textrm{Na razie nie stwierdzono}}$</li>
-| A05:2021 Security Misconfiguration| <ul> <li>$\color{yellow}{\textrm{Domyślny nagłówek HTTP x-powered-by może ujawnić szczegóły implementacji atakującemu}}$</li>|
+| A05:2021 Security Misconfiguration| <ul> <li>$\color{green}{\textrm{Domyślny nagłówek HTTP x-powered-by może ujawnić szczegóły implementacji atakującemu}}$</li>|
 | A06:2021 Vulnerable and Outdated Components| <ul> <li>$\color{yellow}{\textrm{Wykorzystywane są przestarzałe wersje bibliotek, oraz instalowane takie, które nie są używane}}$</li> 
-| A07:2021 Identification and Authentication Failures| <ul> <li>$\color{red}{\textrm{Hasło zapisane w bazie danych w postaci zwykłego tekstu}}$</li><li>$\color{yellow}{\textrm{Sesja pozostaje aktywna do momentu, gdy użytkownik jawnie się wyloguje}}$</li><li>$\color{yellow}{\textrm{Aplikacja nie wymusza silnego hasła}}$</li><li>$\color{green}{\textrm{Aplikacja precyzuje czy błędne jest hasło czy login}}$</li>
+| A07:2021 Identification and Authentication Failures| <ul> <li>$\color{red}{\textrm{Hasło zapisane w bazie danych w postaci zwykłego tekstu}}$</li><li>$\color{red}{\textrm{Sesja pozostaje aktywna do momentu, gdy użytkownik jawnie się wyloguje}}$</li><li>$\color{yellow}{\textrm{Aplikacja nie wymusza silnego hasła}}$</li><li>$\color{green}{\textrm{Aplikacja precyzuje czy błędne jest hasło czy login}}$</li>
 | A08:2021 Software and Data Integrity Failures| <ul> <li>$\color{grey}{\textrm{ Na razie nie stwierdzono }}$</li>
 | A09:2021 Security Logging and Monitoring Failures| <ul> <li>$\color{yellow}{\textrm{Brak jakiegokolwiek logowania i monitoringu}}$</li>
 | A10:2021 Server-Side Request Forgery (SSRF)| <ul> <li>$\color{red}{\textrm{Atakujący może zmienić parametry URL żeby wskazać na kontrolowaną przez siebie stronę internetową, aby wejść w interakcję z serwerem }}$</li>
@@ -113,7 +113,7 @@ Ta luka pozwala atakującemu na dostęp do domyślnych kont, nieużywanych stron
 |:------: | ----------- |
 | Opis podatności | Dzięki narzędziom dewelopera, każdy użytkownik można zauważyć nagłówek `X-powered-by`. Nagłówek ten może ujawnić szczegóły implementacji atakującemu. Backend jest wspierany przez Express.|
 | Zrzuty ekranowe | Domyślny nagłówek HTTP x-powered-by może ujawnić szczegóły implementacji atakującemu. <br/> <img src='images/8.png'/> <br/> |
-| Poziom niebezpieczeństwa	 | $\color{yellow}{\textrm{ŚREDNI}}$  |
+| Poziom niebezpieczeństwa	 | $\color{green}{\textrm{NISKI}}$  |
 | Rekomendacje	 | <ul><li>Używać najnowszych stabilnych wersji node.js i express</li> <li>Wywołać metodę `app.disable('x-powered-by')` w celu nie wyświetlania podanej informacji </li> </ul> |
 |||
 
@@ -122,7 +122,40 @@ Komponenty, takie jak biblioteki, frameworki i inne moduły oprogramowania, praw
 |||
 |:------: | ----------- |
 | Opis podatności | W aplikacji NodeGoat występują liczne przestarzałe i podatne komponenty. Instaluje ona również pakiety z których w rzeczywistości nie korzysta |
-| Zrzuty ekranowe | Wykonano polecenie npm audit i stwierdzono wiele podatności. Polecenie audit przesyła opis zależności skonfigurowanych w projekcie do domyślnego rejestru i prosi o raport znanych podatności. Jeśli jakieś podatności zostaną znalezione, wtedy zostanie obliczony wpływ i odpowiednie środki zaradcze. <br/> <img src='images/A6_1.png'/> <br /> Przykładowe znalezione podatności <img src='images/A6_2.png'/> <br/> <img src='images/A6_3.png'/> <br/> Wykorzystano także narzędzie `npm-check`, wynik jego działania przedstawiony jest na zdjęciu poniżej <br/> <img src='images/A6_4.png'/>|
+| Zrzuty ekranowe | Wykonano polecenie npm audit i stwierdzono wiele podatności. Polecenie audit przesyła opis zależności skonfigurowanych w projekcie do domyślnego rejestru i prosi o raport znanych podatności. Jeśli jakieś podatności zostaną znalezione, wtedy zostanie obliczony wpływ i odpowiednie środki zaradcze. <br/> <img src='images/A6_1.png'/> <br /> Przykładowe znalezione podatności <img src='images/A6_2.png'/> <br/> <img src='images/A6_3.png'/> <br/> Wykorzystano także narzędzie `npm-check`, wynik jego działania przedstawiony jest na zdjęciu poniżej <br/> <img src='images/A6_4.PNG'/>|
 | Poziom niebezpieczeństwa	 | $\color{yellow}{\textrm{ŚREDNI}}$  |
 | Rekomendacje	 | <ul><li>Usunąć nieużywane zależności, niepotrzebne funkcje, komponenty, pliki i dokumentację.</li> <li>Należy pozyskiwać komponenty tylko z oficjalnych źródeł poprzez bezpieczne odnośniki</li> <li>Monitorować biblioteki i komponenty, które nie są utrzymywane lub nie są tworzone łaty bezpieczeństwa dla starszych wersji.</li></ul> |
+|||
+
+## A07:2021 Identification and Authentication Failures
+Potwierdzenie tożsamości użytkownika, uwierzytelnienie i zarządzanie sesją jest kluczowe dla ochrony przed atakami związanymi z uwierzytelnianiem. Błędy tej kategorii mogą prowadzić do kradzieży danych. Ponadto aplikacja NodeGoat nie posiada mechanizmu służącego do odzyskiwania czy resetowania hasła.
+|||
+|:------: | ----------- |
+| Opis podatności | Aplikacja NodeGoat w żaden sposób nie szyfruje haseł przechowywanych w bazie danych. Są one przechowywane w postaci zwykłego tekstu. |
+| Zrzuty ekranowe | Na zdjęciu widoczne jest, że hasła przechowywane są w bazie danych przy pomocy zwykłego tekstu bez jakiegokolwiek szyfrowania <br /> <br/> Kod odpowiedzialny za zapis użytkownika do bazy: <br /> <img src='images/A7_1_1.png'/> <br /> Użytkownicy przechowywani w bazie danych: <br /> <img src='images/A7_1_2.png'/> |
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje	 | <ul><li> Należy szyfrować hasła przechowywane w bazie danych przy pomocy `argon2` lub `bcrypt` </li></ul> |
+|||
+
+|||
+|:------: | ----------- |
+| Opis podatności | W aplikacji NodeGoat nie występuje żaden mechanizm zarządzania sesją. Sesja pozostaje aktywna do momentu, gdy użytkownik jawnie się wyloguje. Ponadto, aplikacja nie zapobiega dostępowi do ciasteczek w skrypcie, co czyni ją podatną na ataki Cross Site Scripting (XSS). Nie zapobiega się również wysyłaniu ciasteczek przy pomocy niezabezpieczonego połączenia HTTP. Aplikacja nie regeneruje nowego identyfikatora sesji po zalogowaniu się użytkownika, co sprawia, że istnieje podatność na przechwycenie sesji, jeśli napastnik jest w stanie w jakiś sposób wykraść ciasteczko z identyfikatorem sesji i użyć go.|
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje	 | <ul><li> Sesja użytkownika powinna być kończona zawsze gdy użytkownik wyłączy przeglądarkę, lub po jakimś określonym czasie </li> <li>Identyfikator sesji powinien być regenerowany podczas każdego logowania</li> <li>Należy chronić ciasteczka przed atakami XSS</li></ul> |
+|||
+
+|||
+|:------: | ----------- |
+| Opis podatności | W audytowanej aplikacji nie jest wymagane stosowanie silnych haseł. Możliwe jest nawet utworzenie hasła składającego się tylko z jednego znaku. Napastnik może wykorzystać tę lukę poprzez zgadywanie haseł metodą brute force.|
+| Zrzuty ekranowe | Aplikacja NodeGoat nie wymusza silnego hasła. <br/> <img src='images/A7_2_1.png'/> <br/> regex dla egzekwowania hasła jest po prostu słaby |
+| Poziom niebezpieczeństwa	 | $\color{yellow}{\textrm{ŚREDNI}}$  |
+| Rekomendacje	 | <ul><li> Minimalna długość hasła powinna wynosić co najmniej osiem (8) znaków. Połączenie tej długości ze złożonością sprawia, że hasło jest trudne do odgadnięcia </li> <li>Złożoność hasła - Znaki hasła powinny być kombinacją znaków alfanumerycznych. Znaki alfanumeryczne składają się z liter, cyfr, znaków interpunkcyjnych, symboli matematycznych</li></ul> |
+|||
+
+|||
+|:------: | ----------- |
+| Opis podatności | W przypadku nieudanej próby logowania aplikacja w jawny sposób wymienia, który element był błędny: login czy hasło |
+| Zrzuty ekranowe | `handleLoginRequest()` wymienia czy hasło było nieprawidłowe lub czy użytkownik nie istnieje. <br/> <img src='images/A7_2_2.png'/> <br /> Błędny użytkownik: <br /> <img src='images/A7_2_3.png'/> <br /> Błędne hasło: <br/> <img src='images/A7_2_4.png'/>|
+| Poziom niebezpieczeństwa	 | $\color{green}{\textrm{NISKI}}$|
+| Rekomendacje	 | <ul><li> Minimalna długość hasła powinna wynosić co najmniej osiem (8) znaków. Połączenie tej długości ze złożonością sprawia, że hasło jest trudne do odgadnięcia </li> <li>Odpowiedzi na niepowodzenie uwierzytelnienia nie powinny wskazywać, która część danych uwierzytelniających była nieprawidłowa. Na przykład, zamiast "Nieprawidłowa nazwa użytkownika" lub "Nieprawidłowe hasło", wystarczy użyć "Nieprawidłowa nazwa użytkownika i/lub hasło"</li></ul> |
 |||
