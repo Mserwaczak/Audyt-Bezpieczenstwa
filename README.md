@@ -155,7 +155,7 @@ Potwierdzenie tożsamości użytkownika, uwierzytelnienie i zarządzanie sesją 
 |||
 |:------: | ----------- |
 | Opis podatności | W przypadku nieudanej próby logowania aplikacja w jawny sposób wymienia, który element był błędny: login czy hasło |
-| Zrzuty ekranowe | `handleLoginRequest()` wymienia czy hasło było nieprawidłowe lub czy użytkownik nie istnieje. <br/> <img src='images/A7_2_2.png'/> <br /> Błędny użytkownik: <br /> <img src='images/A7_2_3.png'/> <br /> Błędne hasło: <br/> <img src='images/A7_2_4.png'/>|
+| Zrzuty ekranowe | `handleLoginRequest()` wymienia czy hasło było nieprawidłowe lub czy użytkownik nie istnieje. <br/> <img src='images/A7_2_2.png'/> <br /> Błędny użytkownik: <br /> <img src='images/A7_2_3.PNG'/> <br /> Błędne hasło: <br/> <img src='images/A7_2_4.PNG'/>|
 | Poziom niebezpieczeństwa	 | $\color{green}{\textrm{NISKI}}$|
 | Rekomendacje	 | <ul><li> Minimalna długość hasła powinna wynosić co najmniej osiem (8) znaków. Połączenie tej długości ze złożonością sprawia, że hasło jest trudne do odgadnięcia </li> <li>Odpowiedzi na niepowodzenie uwierzytelnienia nie powinny wskazywać, która część danych uwierzytelniających była nieprawidłowa. Na przykład, zamiast "Nieprawidłowa nazwa użytkownika" lub "Nieprawidłowe hasło", wystarczy użyć "Nieprawidłowa nazwa użytkownika i/lub hasło"</li></ul> |
 |||
