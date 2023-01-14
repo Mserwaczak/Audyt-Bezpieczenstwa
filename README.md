@@ -26,6 +26,7 @@ Aplikacja NodeGoat jest aplikacją webową, opartą o architekturę klient-serwe
 * Serwer HTTP
 * MongoDB
 * NodeJS
+
 Aplikacja służy do zarządzania emeryturami pracowników.
 # 3. Znalezione podatności pod względem poziomu niebezpieczeństwa
 <img src="images/wykres.png" width="750" height="500"  alt="Wykres"/>
