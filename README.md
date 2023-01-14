@@ -178,6 +178,14 @@ Potwierdzenie tożsamości użytkownika, uwierzytelnienie i zarządzanie sesją 
 |||
 
 ## A08:2021 Software and Data Integrity Failures
+Złożone aplikację, często wykorzystują zewnętrze biblioteki, paczki lub moduły. Weryfikacja integralności jest ważnym elementem pozwalającym uniknąć zagrożeń.
+|||
+|:------: | ----------- |
+| Opis podatności | Wersje pakietów są zapisywane domyślnie w pliku package.json. Prefiks „^” oznacza aktualizacje wersji minor oraz patch, a także kompatybilność. Gdy usunięty zostanie plik package-lock.json oraz folder node_modules, możliwe jest wykonanie polecenie `npm install` oraz aktualizacja paczek. Cyberprzestępca może to wykorzystać, poprzez publikację nowej wersji paczki ze złośliwym kodem. |
+| Zrzuty ekranowe |  <img src='images/A8.PNG'/> |
+| Poziom niebezpieczeństwa | $\color{green}{\textrm{NISKI}}$ |	 
+| Rekomendacje	 | <ul><li> Dodanie w pliku package.json `save-exact=true`, co gwarantuje, że NPM instaluje wskazane wersje </li> |
+|||
 
 ## A09:2021 Security Logging & Monitoring Failures
 Ta kategoria ma pomóc w wykrywaniu, eskalacji i reagowaniu na aktywne naruszenia. Bez logowania i monitorowania nie można wykryć naruszeń. Dzięki logom można także łatwiej naprawić błędy.
