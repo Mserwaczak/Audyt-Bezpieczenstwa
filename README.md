@@ -107,6 +107,14 @@ Kategoria podatności, dzięki którym użytkownicy wstrzykują różnego typu p
 |||
 
 ## A04:2021 Insecure Design
+Kategoria błędów która koncentruje się na zagrożeniu wynikającym z wad projektowych i architektonicznych.  Kategoria promuje użycie sprawdzonych, bezpiecznych wzorców projektowych oraz architektury referencyjnej
+|||
+|:------: | ----------- |
+| Opis podatności |Twórcy aplikacji nie uwzględnili możliwości zakończenia (wygaśnięcia) sesji użytkownika.  W przypadku, gdy użytkownik nie wyloguje się, istnieje zagrożenie iż dostęp do jego konta mogą uzyskać inne osoby.|
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje	 | <ul><li>Stworzenie mechanizmu, który sprawi iż sesja użytkownika wygaśnie w momencie gdy nie podejmie przez określony czas czynności </li> </ul> |
+|||
+
 
 ## A05:2021 Security Misconfiguration
 Ta luka pozwala atakującemu na dostęp do domyślnych kont, nieużywanych stron, niezałatanych dziur, niezabezpieczonych plików i katalogów, itp. w celu uzyskania nieautoryzowanego dostępu lub wiedzy o systemie. <br/> Nieprawidłowa konfiguracja bezpieczeństwa może zdarzyć się na każdym poziomie stosu aplikacji, w tym platformy, serwera WWW, serwera aplikacji, bazy danych, frameworka i kodu własnego.
