@@ -155,7 +155,29 @@ Potwierdzenie tożsamości użytkownika, uwierzytelnienie i zarządzanie sesją 
 |||
 |:------: | ----------- |
 | Opis podatności | W przypadku nieudanej próby logowania aplikacja w jawny sposób wymienia, który element był błędny: login czy hasło |
-| Zrzuty ekranowe | `handleLoginRequest()` wymienia czy hasło było nieprawidłowe lub czy użytkownik nie istnieje. <br/> <img src='images/A7_2_2.png'/> <br /> Błędny użytkownik: <br /> <img src='images/A7_2_3.PNG'/> <br /> Błędne hasło: <br/> <img src='images/A7_2_4.PNG'/>|
+| Zrzuty ekranowe | `handleLoginRequest()` wymienia czy hasło było nieprawidłowe lub czy użytkownik nie istnieje. <br/> <img src='images/A9.png'/> <br /> Błędny użytkownik: <br /> <img src='images/A7_2_3.PNG'/> <br /> Błędne hasło: <br/> <img src='images/A7_2_4.PNG'/>|
 | Poziom niebezpieczeństwa	 | $\color{green}{\textrm{NISKI}}$|
 | Rekomendacje	 | <ul><li> Minimalna długość hasła powinna wynosić co najmniej osiem (8) znaków. Połączenie tej długości ze złożonością sprawia, że hasło jest trudne do odgadnięcia </li> <li>Odpowiedzi na niepowodzenie uwierzytelnienia nie powinny wskazywać, która część danych uwierzytelniających była nieprawidłowa. Na przykład, zamiast "Nieprawidłowa nazwa użytkownika" lub "Nieprawidłowe hasło", wystarczy użyć "Nieprawidłowa nazwa użytkownika i/lub hasło"</li></ul> |
+|||
+
+## A08:2021 Software and Data Integrity Failures
+
+## A09:2021 Security Logging & Monitoring Failures
+Ta kategoria ma pomóc w wykrywaniu, eskalacji i reagowaniu na aktywne naruszenia. Bez logowania i monitorowania nie można wykryć naruszeń. Dzięki logom można także łatwiej naprawić błędy.
+|||
+|:------: | ----------- |
+| Opis podatności | Aplikacja NodeGoat nie posiada praktycznie żadnych logów. Bez nich nie można stwierdzić czy wystąpił atak czy go nie było. Jeśli aplikacja popsułaby się, nie będzie wiadomo która konkretnie jej część jest wadliwa. Bez logowania i monitorowania nie da się wykryć naruszeń. <br/>Tylko dysponując logami można:<ul><li>	Poinformować użytkowników </li> <li>	Zgłosić organom ścigania włamanie </li></ul>|
+| Zrzuty ekranowe | Przykładowo w funkcji `handleLoginRequest()` nie występują jakiekolwiek logi odnoszące się do prób logowania: <br/> <img src='images/A9.png'/> <br/> Administrator nie będzie wiedział czy podjęto próbę włamania |
+| Poziom niebezpieczeństwa	 | $\color{yellow}{\textrm{ŚREDNI}}$|
+| Rekomendacje	 | <ul><li> Należy upewnić się, że wszystkie błędy logowania, kontroli dostępu i walidacji danych wejściowych po stronie serwera mogą być rejestrowane z kontekstem użytkownika wystarczającym do zidentyfikowania podejrzanych lub złośliwych kont i przechowywane przez wystarczająco długi czas, aby umożliwić przeprowadzenie analizy kryminalnej </li> <li>Korzystać z aplikacji do logowania i monitorowania takich jak: LogRocket, RayGun czy Rollbar</li></ul> |
+|||
+
+## A10:2021 Server-Side Request Forgery (SSRF)
+Błędy SSRF występują, gdy aplikacja internetowa pobiera zdalny zasób bez sprawdzania poprawności adresu URL dostarczonego przez użytkownika. W ataku SSRF atakujący może nadużywać funkcjonalności na serwerze do odczytu lub aktualizacji zasobów wewnętrznych. Atakujący może dostarczyć lub zmodyfikować adres URL, z którego kod uruchomiony na serwerze będzie odczytywał lub przesyłał dane, a poprzez staranne dobranie adresów URL atakujący może być w stanie odczytać konfigurację serwera 
+|||
+|:------: | ----------- |
+| Opis podatności | W aplikaji NodeGoat możliwe jest przechwycenie adresu URL oraz jego zmodyfikowanie na inny, przez co możliwe jest odczytanie informacji o konfiguracji serwera.|
+| Zrzuty ekranowe | Napastnik może wykorzystać lukę SSRF jako sposób na zebranie informacji o serwerze i sieci lokalnej. Na przykład, na stronie /research w aplikacji, użytkownik podaje symbol akcji. Symbol akcji jest łączony z adresem URL Yahoo, a serwer pobiera odpowiedź i wyświetla stronę. <br/> <img src='images/A10_1.png'/> <br/> Atakujący może zmienić parametry url i symbol, aby wskazać na kontrolowaną przez atakującego stronę internetową, aby wejść w interakcję z serwerem. Użytkownik podaje symbol giełdowy: <br/> <img src='images/A10_2.png'/> <br/> Następnie zostaje przekierowany na następującą stronę <br/> <img src='images/A10_3.png'/> <br/> Atakujący może zmienić adres URL lub symbol <br/> <img src='images/A10_4.png'/> <br/> Dzięki czemu może uzyskać informacje o serwerze <br/> <img src='images/A10_5.png'/> <br/>  |
+| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$|
+| Rekomendacje	 | <ul><li> Należy sprawdzać rozszerzenie przez parsowanie URL-a</li> <li> Każde dane wejściowe przyjęte od użytkownika powinny zostać zweryfikowane i odrzucone, jeśli nie odpowiadają oczekiwanej pozytywnej identyfikacji. </li></ul> |
 |||
