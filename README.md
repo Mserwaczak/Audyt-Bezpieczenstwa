@@ -111,8 +111,8 @@ Kategoria błędów która koncentruje się na zagrożeniu wynikającym z wad pr
 |||
 |:------: | ----------- |
 | Opis podatności | W aplikacji NodeGoat nie zastosowano algorytmów szyfrujących dla haseł. W wyniku wycieku danych dostęp do kont użytkowników jest znacznie ułatwiony. |
-| Poziom niebezpieczeństwa | $\color{red}{\textrm{WYSOKI}}$  |
 | Zrzuty ekranowe | <img src='images/A4_1.PNG'/> |
+| Poziom niebezpieczeństwa | $\color{red}{\textrm{WYSOKI}}$  |
 | Rekomendacje | <ul><li> Zastosowanie algorytmu szyfrującego np. bcrypt </li> <li> Zastosowanie metody „salting”, która dodaje losowe dane do haseł w celu ochrony </li>
 |||
 
