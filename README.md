@@ -110,8 +110,15 @@ Kategoria podatności, dzięki którym użytkownicy wstrzykują różnego typu p
 Kategoria błędów która koncentruje się na zagrożeniu wynikającym z wad projektowych i architektonicznych.  Kategoria promuje użycie sprawdzonych, bezpiecznych wzorców projektowych oraz architektury referencyjnej
 |||
 |:------: | ----------- |
+| Opis podatności | W aplikacji NodeGoat nie zastosowano algorytmów szyfrujących dla haseł. W wyniku wycieku danych dostęp do kont użytkowników jest znacznie ułatwiony. |
+| Poziom niebezpieczeństwa | $\color{red}{\textrm{WYSOKI}}$  |
+| Rekomendacje | <ul><li> Zastosowanie algorytmu szyfrującego np. bcrypt </li> <li> Zastosowanie metody „salting”, która dodaje losowe dane do haseł w celu ochrony </li>
+|||
+
+|||
+|:------: | ----------- |
 | Opis podatności |Twórcy aplikacji nie uwzględnili możliwości zakończenia (wygaśnięcia) sesji użytkownika.  W przypadku, gdy użytkownik nie wyloguje się, istnieje zagrożenie iż dostęp do jego konta mogą uzyskać inne osoby.|
-| Poziom niebezpieczeństwa	 | $\color{red}{\textrm{WYSOKI}}$  |
+| Poziom niebezpieczeństwa	 | $\color{green}{\textrm{NISKI}}$  |
 | Rekomendacje	 | <ul><li>Stworzenie mechanizmu, który sprawi iż sesja użytkownika wygaśnie w momencie gdy nie podejmie przez określony czas czynności </li> </ul> |
 |||
 
