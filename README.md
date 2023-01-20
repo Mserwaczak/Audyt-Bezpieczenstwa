@@ -1,5 +1,5 @@
 
-
+Audyt aplikacji NodeGoat wykonany na zaliczenie przedmiotu Bezpieczeństwo Systemów Informatycznych
 # Raport podatności znalezionych w aplikacji Node Goat
 
 
